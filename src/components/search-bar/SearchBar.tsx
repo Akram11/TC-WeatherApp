@@ -16,9 +16,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
 }: SearchBarProps) => {
   const inputRef = useRef<any>();
   const libraries: Libraries = ["places"];
-
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyAagZlKPleDMi0DOg2LYE-FLixJNSgEAJo",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
     libraries,
   });
 
