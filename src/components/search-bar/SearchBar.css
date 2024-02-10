@@ -1,16 +1,17 @@
 .search-bar {
-    display: block;
-    width: 100%;
-    margin: 0 auto;
-    padding: 10px;
-    padding-left: 40px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    box-sizing: border-box;
-    background: url('../../../public/assets/icons/location.png') no-repeat scroll 15px 9px;
-    background-size: 16px 16px;
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  padding-left: 40px;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  box-sizing: border-box;
+  background: url("../../../public/icons/location.png") no-repeat scroll 15px
+    9px;
+  background-size: 16px 16px;
 }
 
 .pac-container {
-    z-index: 9999 !important;
+  z-index: 9999 !important;
 }
