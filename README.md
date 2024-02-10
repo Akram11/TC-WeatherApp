@@ -1,46 +1,61 @@
-# Getting Started with Create React App
+# TC-Weather App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the TC-Weather App, a React project written in TypeScript. This application allows users to search for any location using the Google Places API, providing information such as the location name, an image, and the current weather state information using the OpenWeather API.
 
-## Available Scripts
+## Getting Started
 
-In the project directory, you can run:
+Follow the instructions below to get the TC-Weather App up and running on your local machine.
 
-### `npm start`
+### Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Node.js: Make sure you have Node.js installed on your machine. You can download it [here](https://nodejs.org/).
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Installation
 
-### `npm test`
+1. Clone the repository to your local machine:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```bash
+   git clone https://github.com/Akram11/TC-WeatherApp
 
-### `npm run build`
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Navigate to the project directory:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   ```bash
+   cd TC-Weather-App
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   ```
 
-### `npm run eject`
+3. Install the required dependencies:
+   ```bash
+   npm install
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Setting up API Keys
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Create a .env file in the root directory of the project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+2. Add your API keys for the Google Places API and OpenWeather API to the .env file:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+REACT_APP_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+REACT_APP_OPENWEATHER_API_KEY=your_openweather_api_key
 
-## Learn More
+Replace your_google_maps_api_key and your_openweather_api_key with your actual API keys.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Running the App
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. Start the application:
+
+```bash
+ npm start
+```
+
+2. Open your browser and go to http://localhost:3000 to view the TC-Weather App.
+
+### Usage:
+
+1. Use the search bar to look up a location using the Google Places API.
+2. The app will display information about the location, including its name and an image.
+3. Additionally, the current weather state information for the location will be retrieved from the OpenWeather API.
+
+Feel free to explore and enjoy using the TC-Weather App!
