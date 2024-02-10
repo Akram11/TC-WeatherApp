@@ -1,4 +1,4 @@
-import React, { useRef} from "react";
+import React, { useRef } from "react";
 import {
   Libraries,
   StandaloneSearchBox,
@@ -10,7 +10,8 @@ import { LocationAttributes } from "../../pages/home-page/HomePage";
 interface SearchBarProps {
   setImgUrl: React.Dispatch<React.SetStateAction<string>>;
   setLocationAttributes: React.Dispatch<
-    React.SetStateAction<LocationAttributes>>;
+    React.SetStateAction<LocationAttributes>
+  >;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -20,20 +21,27 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const inputRef = useRef<any>();
   const libraries: Libraries = ["places"];
 
-  const { isLoaded, loadError } = useJsApiLoader({
+  const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyAagZlKPleDMi0DOg2LYE-FLixJNSgEAJo",
     libraries,
   });
 
-  const handlePlaceChanged = () => {
-    const [place] = inputRef?.current?.getPlaces();
-    if (place) {
-      place.photos && setImgUrl(place?.photos[0]?.getUrl());
-      setLocationAttributes({
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng(),
-        formatted_address: place.formatted_address,
-      });
+  const handlePlaceChanged = async () => {
+    let places = inputRef?.current?.getPlaces();
+    if (places && Array.isArray(places)) {
+      const [place] = places;
+
+      if (place) {
+        place.photos && setImgUrl(place?.photos[0]?.getUrl());
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+        setLocationAttributes({
+          lat,
+          lng,
+          formatted_address: place.formatted_address,
+        });
+      }
+    }
   };
 
   return (

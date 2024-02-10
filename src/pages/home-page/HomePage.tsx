@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import "./HomePage.css";
 import SearchBar from "../../components/search-bar/SearchBar";
-import LocationContainer from "../../components/location-container/LocationContainer";
+import { LocationContainer } from "../../components/location-container/LocationContainer";
+import { defaultImgUrl } from "../../constants";
 
 export interface LocationAttributes {
   lat: number | null;
@@ -16,12 +17,12 @@ export interface WeatherData {
 }
 
 const HomePage: React.FC = () => {
-  const [imgUrl, setImgUrl] = React.useState("");
+  const [imgUrl, setImgUrl] = React.useState(defaultImgUrl);
   const [locationAttributes, setLocationAttributes] =
     React.useState<LocationAttributes>({
-      lat: 0,
-      lng: 0,
-      formatted_address: "",
+      lat: 52.52000659999999,
+      lng: 13.404954,
+      formatted_address: "Berlin, Germany",
     });
   const [weatherData, setWeatherData] = React.useState<any>(null);
 
@@ -30,16 +31,16 @@ const HomePage: React.FC = () => {
     const lng = locationAttributes.lng;
     if (lat && lng) {
       fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=282a05a3c8db9d58f5af2a852898e86e`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=282a05a3c8db9d58f5af2a852898e86e&units=metric`
       )
         .then((response) => response.json())
-        .then((data) =>
+        .then((data) => {
           setWeatherData({
             temperature: data?.main.temp,
             feelsLike: data?.main.feels_like,
             description: data?.weather[0].description,
-          })
-        )
+          });
+        })
         .catch((error) => console.error("Error:", error));
     }
   }, [locationAttributes]);
