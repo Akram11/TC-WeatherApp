@@ -1,0 +1,7 @@
+.fav-container {
+  padding-top: 15px;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}

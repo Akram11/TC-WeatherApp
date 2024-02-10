@@ -5,17 +5,13 @@ import {
   useJsApiLoader,
 } from "@react-google-maps/api";
 import "./SearchBar.css";
-import { LocationAttributes } from "../../pages/home-page/HomePage";
+import { Location } from "../../interfaces/Location";
 
 interface SearchBarProps {
-  setImgUrl: React.Dispatch<React.SetStateAction<string>>;
-  setLocationAttributes: React.Dispatch<
-    React.SetStateAction<LocationAttributes>
-  >;
+  setLocationAttributes: React.Dispatch<React.SetStateAction<Location>>;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
-  setImgUrl,
   setLocationAttributes,
 }: SearchBarProps) => {
   const inputRef = useRef<any>();
@@ -30,15 +26,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
     let places = inputRef?.current?.getPlaces();
     if (places && Array.isArray(places)) {
       const [place] = places;
-
       if (place) {
-        place.photos && setImgUrl(place?.photos[0]?.getUrl());
+        const imgUrl = place.photos && place?.photos[0]?.getUrl();
         const lat = place.geometry.location.lat();
         const lng = place.geometry.location.lng();
+        const placeId = place.place_id;
+        const formatted_address = place.formatted_address;
         setLocationAttributes({
+          placeId,
           lat,
           lng,
-          formatted_address: place.formatted_address,
+          formatted_address,
+          imgUrl,
         });
       }
     }

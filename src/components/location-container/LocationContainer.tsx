@@ -1,23 +1,37 @@
 import React from "react";
 import "./LocationContainer.css";
-import { WeatherData } from "../../pages/home-page/HomePage";
-// import x from '../../../public/assets/icons/01d.png';
+import { WeatherData } from "../../interfaces/WeatherData";
+import { Location } from "../../interfaces/Location";
 
 interface LocationContainerProps {
-  imgUrl: string;
-  locationName: string;
   weatherData: WeatherData;
+  toggleLocationToFav: (location: Location) => void;
+  isFavorite: boolean;
+  location: Location;
 }
 export const LocationContainer: React.FC<LocationContainerProps> = ({
-  imgUrl,
-  locationName,
   weatherData,
+  toggleLocationToFav: addLocationToFav,
+  isFavorite,
+  location,
 }: LocationContainerProps) => {
   return (
     <div className="location-container">
-      <img src={imgUrl} alt="location" className="location-img" />
+      <img src={location.imgUrl} alt="location" className="location-img" />
       <div className="weather-info-overlay">
-        <div className="location-name">{locationName && locationName}</div>
+        <div className="location-header">
+          <div className="location-name">{location.formatted_address}</div>
+          <div className="fav-icon">
+            <img
+              src={
+                isFavorite ? "icons/favorite.png" : "icons/add-to-favorite.png"
+              }
+              width={60}
+              alt="favorite"
+              onClick={() => addLocationToFav(location)}
+            />
+          </div>
+        </div>
         <div className="main-info">
           <img
             width={80}
@@ -26,7 +40,7 @@ export const LocationContainer: React.FC<LocationContainerProps> = ({
           />
           <div className="main-info-text">
             <div className="temperature">
-              {weatherData?.temperature && Math.round(weatherData?.temperature)}{" "}
+              {weatherData?.temperature && Math.round(weatherData?.temperature)}
               °C
             </div>
             <div className="weather-description">

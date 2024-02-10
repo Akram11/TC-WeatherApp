@@ -17,23 +17,36 @@
 }
 
 .weather-info-overlay {
+  width: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  padding: 10px;
+}
+
+.location-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.fav-icon {
+  margin-left: auto;
 }
 
 .main-info {
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
 }
 
 .main-info-text {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
   padding-left: 1rem;
   font-size: 18px;
   font-weight: 700;
   color: darkblue;
+  flex: 1;
 }
 
 .temperature {
@@ -43,9 +56,9 @@
 }
 
 .location-name {
-  font-size: 3rem;
+  font-size: 2.5rem;
   color: rgb(44, 44, 173);
   font-weight: bold;
   margin-bottom: 8px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); /* Add this line */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
