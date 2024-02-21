@@ -1,60 +1,57 @@
-import React, { useRef } from "react";
-import {
-  Libraries,
-  StandaloneSearchBox,
-  useJsApiLoader,
-} from "@react-google-maps/api";
+import React, { useEffect } from "react";
+import { StandaloneSearchBox } from "@react-google-maps/api";
 import "./SearchBar.css";
 import { Location } from "../../interfaces/Location";
+import useFindPlaceFromQuery from "../../hooks/use-find-place-from-query";
 
 interface SearchBarProps {
-  setLocationAttributes: React.Dispatch<React.SetStateAction<Location>>;
+  setLocationAttributes: (location: Location) => void;
+  isLoaded: boolean;
+  visibleInputText: string;
+  searchQuery: string;
+  setVisibleInputText: (arg0: string) => void;
+  setSearchQuery: (arg0: string) => void;
+  childInputRef: React.MutableRefObject<any>;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
   setLocationAttributes,
+  isLoaded,
+  searchQuery,
+  visibleInputText,
+  setSearchQuery,
+  setVisibleInputText,
+  childInputRef,
 }: SearchBarProps) => {
-  const inputRef = useRef<any>();
-  const libraries: Libraries = ["places"];
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
-    libraries,
-  });
+  const { place } = useFindPlaceFromQuery(childInputRef, isLoaded, searchQuery);
 
-  const handlePlaceChanged = async () => {
-    let places = inputRef?.current?.getPlaces();
-    if (places && Array.isArray(places)) {
-      const [place] = places;
-      if (place) {
-        const imgUrl = place.photos && place?.photos[0]?.getUrl();
-        const lat = place.geometry.location.lat();
-        const lng = place.geometry.location.lng();
-        const placeId = place.place_id;
-        const formatted_address = place.formatted_address;
-        setLocationAttributes({
-          placeId,
-          lat,
-          lng,
-          formatted_address,
-          imgUrl,
-        });
-      }
+  useEffect(() => {
+    if (place) {
+      setLocationAttributes(place);
+      setVisibleInputText(place.formatted_address);
     }
-  };
+  }, [isLoaded, place, setLocationAttributes, setVisibleInputText]);
 
   return (
     <>
-      {isLoaded && (
+      {isLoaded ? (
         <StandaloneSearchBox
-          onLoad={(ref) => (inputRef.current = ref)}
-          onPlacesChanged={handlePlaceChanged}
+          onPlacesChanged={() =>
+            setSearchQuery(childInputRef.current?.value || "")
+          }
         >
           <input
             type="text"
             className="search-bar"
-            placeholder="search for a location ... "
+            placeholder={visibleInputText}
+            ref={childInputRef}
+            autoFocus={true}
+            value={visibleInputText}
+            onChange={(e) => setVisibleInputText(e.target.value)}
           />
         </StandaloneSearchBox>
+      ) : (
+        <div>loading...</div>
       )}
     </>
   );

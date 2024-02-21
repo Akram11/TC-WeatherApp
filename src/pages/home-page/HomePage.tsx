@@ -1,28 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense, useState, useRef } from "react";
 import "./HomePage.css";
-import SearchBar from "../../components/search-bar/SearchBar";
-import { LocationContainer } from "../../components/location-container/LocationContainer";
-import { defaultLocatoinAttributes, defaultWeatherData } from "../../constants";
 import { Location } from "../../interfaces/Location";
 import { WeatherData } from "../../interfaces/WeatherData";
-import FavoriteLocations from "../../components/favorite-locations/FavoriteLocations";
 import { fetchWeatherData } from "../../services/api";
+import ReactLoading from "react-loading";
+import { useJsApiLoader } from "@react-google-maps/api";
+import { defaultLocatoinAttributes, googleJSLoaderLibs } from "../../constants";
+
+const SearchBar = React.lazy(
+  () => import("../../components/search-bar/SearchBar")
+);
+const FavoriteLocations = React.lazy(
+  () => import("../../components/favorite-locations/FavoriteLocations")
+);
+const LocationContainer = React.lazy(
+  () => import("../../components/location-container/LocationContainer")
+);
 
 const HomePage: React.FC = () => {
-  const [locationAttributes, setLocationAttributes] = React.useState<Location>(
-    defaultLocatoinAttributes
-  );
-
-  const [weatherData, setWeatherData] =
-    React.useState<WeatherData>(defaultWeatherData);
-  const [favoriteLocations, setFavoriteLocations] = React.useState<Location[]>([
+  const [locationAttributes, setLocationAttributes] = useState<Location>();
+  const [weatherData, setWeatherData] = useState<WeatherData>();
+  const [favoriteLocations, setFavoriteLocations] = useState<Location[]>([
     defaultLocatoinAttributes,
   ]);
-
+  const [searchQuery, setSearchQuery] = useState<string>("Berlin, Germany");
+  const [visibleInputText, setVisibleInputText] = useState<string>(searchQuery);
+  const [hasError, setHasError] = useState(false);
+  const childInputRef = useRef(null);
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
+    libraries: googleJSLoaderLibs,
+  });
   const isLocationFavorite = (): boolean => {
-    return favoriteLocations.some(
+    return favoriteLocations?.some(
       (favoriteLocation) =>
-        favoriteLocation.placeId === locationAttributes.placeId
+        favoriteLocation.placeId === locationAttributes?.placeId
     );
   };
 
@@ -35,21 +47,61 @@ const HomePage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchWeatherData(locationAttributes.lat, locationAttributes.lng)
-      .then((data) => setWeatherData(data))
-      .catch((error) => console.error("Error:", error));
+    fetchWeatherData(
+      locationAttributes?.lat || 0,
+      locationAttributes?.lng || 0
+    ).then((data: any) => {
+      if (data) {
+        setWeatherData(data);
+        setHasError(false);
+      } else {
+        setHasError(true);
+      }
+    });
   }, [locationAttributes]);
 
+  if (loadError || hasError)
+    return (
+      <div className="container-404">
+        The App has encountered an error, please try again later.
+      </div>
+    );
   return (
     <div className="container">
-      <SearchBar setLocationAttributes={setLocationAttributes} />
-      <FavoriteLocations locations={favoriteLocations} />
-      <LocationContainer
-        isFavorite={isLocationFavorite()}
-        toggleLocationToFav={handleToggleAddToFav}
-        location={locationAttributes}
-        weatherData={weatherData}
-      />
+      <Suspense
+        fallback={
+          <div className="loading-cnt">
+            <ReactLoading
+              type={"spin"}
+              color={"#fff"}
+              height={100}
+              width={100}
+            />
+          </div>
+        }
+      >
+        <SearchBar
+          childInputRef={childInputRef}
+          setLocationAttributes={setLocationAttributes}
+          isLoaded={isLoaded}
+          visibleInputText={visibleInputText}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          setVisibleInputText={setVisibleInputText}
+        />
+        <FavoriteLocations
+          locations={favoriteLocations}
+          setSearchQuery={setSearchQuery}
+        />
+        {locationAttributes && weatherData && (
+          <LocationContainer
+            isFavorite={isLocationFavorite()}
+            toggleLocationToFav={handleToggleAddToFav}
+            location={locationAttributes}
+            weatherData={weatherData}
+          />
+        )}
+      </Suspense>
     </div>
   );
 };

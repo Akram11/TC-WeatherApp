@@ -1,7 +1,22 @@
 .container {
-  max-width: 1080px;
+  max-width: 870px;
   min-width: 300px;
   height: auto;
   margin: 20px auto;
   padding: 5px;
+}
+
+.loading-cnt {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container-404 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
