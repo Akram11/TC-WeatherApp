@@ -50,7 +50,7 @@ Replace your_google_maps_api_key and your_openweather_api_key with your actual A
  npm start
 ```
 
-2. Open your browser and go to http://localhost:3000 to view the TC-Weather App.
+2. Open your browser and go to http://localhost:3001 to view the TC-Weather App.
 
 ### Usage:
 

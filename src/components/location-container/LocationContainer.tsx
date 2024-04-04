@@ -1,37 +1,65 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./LocationContainer.css";
 import { WeatherData } from "../../interfaces/WeatherData";
 import { Location } from "../../interfaces/Location";
 import DateTime from "../date-time/DateTime";
 import { shouldIcnBeInverted } from "../../helpers/functions.helper";
+import { fetchWeatherData } from "../../services/api";
 
 interface LocationContainerProps {
-  weatherData: WeatherData;
   toggleLocationToFav: (location: Location) => void;
   isFavorite: boolean;
   location: Location;
 }
+
+const defaultBG = require("../../assets/images/defaultBG.jpeg");
+const favoriteIcon = "icons/favorite.png";
+const addToFavoriteIcon = "icons/add-to-favorite.png";
+const unknownWeatherIcon = "/icons/unknown.png";
+
 const LocationContainer: React.FC<LocationContainerProps> = ({
-  weatherData,
   toggleLocationToFav,
   isFavorite,
   location,
 }: LocationContainerProps) => {
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [hasError, setHasError] = useState(false);
+  const locationImgSrc = location?.imgUrl ? location.imgUrl : defaultBG;
+  const weatherIconSrc = weatherData?.weatherIcon
+    ? `https://openweathermap.org/img/wn/${weatherData.weatherIcon}@2x.png`
+    : unknownWeatherIcon;
+
+  useEffect(() => {
+    if (location?.lat && location?.lng) {
+      fetchWeatherData(location.lat, location.lng)
+        .then((data: any) => {
+          if (data) {
+            setWeatherData(data);
+            setHasError(false);
+          } else {
+            setHasError(true);
+          }
+        })
+        .catch(() => {
+          setHasError(true);
+        });
+    }
+  }, [location]);
+
+  if (hasError) {
+    return <div>Error: Unable to fetch weather data</div>;
+  }
+
   return (
     <div className="lc_location-container">
       <img
-        src={
-          location?.imgUrl
-            ? location.imgUrl
-            : require("../../assets/images/defaultBG.jpeg")
-        }
+        src={locationImgSrc}
         alt="location"
         className={`lc_location-img ${
           location.imgUrl ? "" : "lc_location-img_default"
         } `}
       />
       <div className="lc_corner-upper-left-overlay"></div>
-
       <div className="lc_weather-info-overlay">
         <div className="lc_location-header">
           <div className="lc_location-name">{location.formatted_address}</div>
@@ -39,9 +67,7 @@ const LocationContainer: React.FC<LocationContainerProps> = ({
         </div>
         <div className="lc_fav-icon">
           <img
-            src={
-              isFavorite ? "icons/favorite.png" : "icons/add-to-favorite.png"
-            }
+            src={isFavorite ? favoriteIcon : addToFavoriteIcon}
             width={60}
             alt="favorite"
             onClick={() => toggleLocationToFav(location)}
@@ -55,14 +81,10 @@ const LocationContainer: React.FC<LocationContainerProps> = ({
           </div>
 
           <img
-            src={
-              weatherData?.weatherIcon
-                ? ` https://openweathermap.org/img/wn/${weatherData.weatherIcon}@2x.png`
-                : `/icons/unknown.png`
-            }
+            src={weatherIconSrc}
             alt="weather-icon"
             className={`lc_weather-icon ${
-              shouldIcnBeInverted(weatherData?.weatherIcon)
+              shouldIcnBeInverted(weatherData?.weatherIcon ?? "")
                 ? "lc_weather-icon_inverted"
                 : ""
             }`}

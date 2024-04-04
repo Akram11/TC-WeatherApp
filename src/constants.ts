@@ -6,7 +6,7 @@ export const defaultLng: number = 13.404954;
 export const defaultFormattedAddress: string = "Berlin, Germany";
 export const defaultLocatoinId: string = "ChIJAVkDPzdOqEcRcDteW0YgIQQ";
 
-export const defaultLocatoinAttributes: Location = {
+export const defaultLocationAttributes: Location = {
   placeId: defaultLocatoinId,
   lat: defaultLat,
   lng: defaultLng,
